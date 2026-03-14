@@ -1,0 +1,15 @@
+:root { --neon: #00ff41; --bg: #050505; }
+body { background: var(--bg); color: var(--neon); font-family: 'Courier New', monospace; margin: 0; display: flex; flex-direction: column; height: 100vh; }
+header { border-bottom: 2px solid var(--neon); padding: 20px; text-align: center; background: #000; }
+.big-title { font-size: 50px; font-weight: 900; letter-spacing: 15px; text-shadow: 0 0 20px var(--neon); margin: 0; }
+.subtitle { font-size: 10px; color: #666; margin-top: 5px; }
+.tabs { display: flex; background: #111; border-bottom: 1px solid #333; }
+.tab { flex: 1; padding: 15px; border: none; background: none; color: #555; cursor: pointer; font-family: inherit; font-weight: bold; }
+.tab.active { color: var(--neon); background: #1a1a1a; border-bottom: 3px solid var(--neon); }
+.view { flex-grow: 1; padding: 20px; display: none; }
+.view.active { display: block; }
+label { display: block; font-size: 10px; color: #444; margin-bottom: 5px; }
+input, select { width: 100%; background: #000; border: 1px solid #333; color: var(--neon); padding: 12px; margin-bottom: 15px; font-family: inherit; }
+.btn { width: 100%; padding: 15px; background: var(--neon); color: #000; border: none; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+.console { background: #000; border: 1px dashed #222; height: 180px; margin-top: 20px; padding: 10px; font-size: 12px; overflow-y: auto; color: #00cc33; }
+footer { padding: 15px; text-align: center; font-size: 11px; color: #333; letter-spacing: 2px; border-top: 1px solid #111; }
