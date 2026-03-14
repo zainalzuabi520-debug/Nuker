@@ -4,21 +4,19 @@ import sys
 import random
 import string
 
+# --- SETTINGS ---
 AUTHOR = "Zain"
-VERSION = "6.5.0-PRO"
-FOLDER_NAME = "Nuker_Data"
-LOG_FILE = f"{FOLDER_NAME}/passwords.txt"
+VERSION = "7.5.0-ULTRA"
+FOLDER = "Nuker_Data"
+DB = f"{FOLDER}/passwords.txt"
 
-# Ensure the data folder exists
-if not os.path.exists(FOLDER_NAME):
-    os.makedirs(FOLDER_NAME)
+# Ensure folder is ready
+if not os.path.exists(FOLDER):
+    os.makedirs(FOLDER)
 
-def clear():
-    os.system('clear' if os.name == 'posix' else 'cls')
-
-def draw_logo():
-    """This is your Terminal Logo."""
-    print("\033[92m") # Neon Green
+def header():
+    os.system('clear')
+    print("\033[92m" + "="*70)
     print(r"""
   _   _ _   _ _  _______ _____  
  | \ | | | | | |/ / ____|  __ \ 
@@ -26,86 +24,77 @@ def draw_logo():
  | |\  | |_| |  < | |____|  _  / 
  |_| \_|\___/|_|\_\______|_| \_\ 
     """)
-    print("="*60)
-    print(f" [SYSTEM]: NUKER C2 INTERFACE | v{VERSION}")
-    print(f" [CREDIT]: MADE BY {AUTHOR}")
-    print("="*60 + "\033[0m")
+    print(f" [C2 PANEL]: v{VERSION} | [DEV]: {AUTHOR}")
+    print("="*70 + "\033[0m")
 
-def main_menu(last_action="Waiting for command..."):
-    draw_logo()
-    print("\033[92m [1] DEPLOY PHISH LURE (100+ Platforms)")
-    print(" [2] COMPILE MALWARE PAYLOAD")
-    print(" [3] VIEW SAVED LEAKS (passwords.txt)")
-    print(" [4] DELETE ALL SAVED DATA")
+def cmd_bar(msg):
+    """This is the bottom bar that shows the captured User/Pass"""
+    print("\033[92m" + "="*70)
+    print(f" [LIVE FEED]: \033[93m{msg}\033[0m")
+    print("\033[92m" + "="*70 + "\033[0m")
+
+def main(status="SYSTEM IDLE - WAITING FOR TARGET"):
+    header()
+    print("\033[92m [1] DEPLOY PHISH-LINK (100+ Platforms)")
+    print(" [2] DEPLOY EMAIL-LURE (Direct Template)")
+    print(" [3] COMPILE MALWARE (Full Device Control Sim)")
+    print(" [4] VIEW DATABASE (All Leaked Creds)")
     print(" [5] EXIT")
-    print("-" * 60)
-    print(f"\033[93m [LAST EVENT]: {last_action}\033[0m")
+    print("-" * 70)
+    cmd_bar(status)
     
-    cmd = input("\n\033[92mNUKER_C2 > \033[0m").strip()
+    choice = input("\033[92mNUKER > \033[0m").strip()
     
-    if cmd == "1":
-        run_phish()
-    elif cmd == "2":
+    if choice == "1" or choice == "2":
+        run_capture(choice)
+    elif choice == "3":
         run_malware()
-    elif cmd == "3":
-        view_data()
-    elif cmd == "4":
-        confirm_delete()
-    elif cmd == "5":
+    elif choice == "4":
+        view_db()
+    elif choice == "5":
         sys.exit()
-    else:
-        main_menu("Invalid command entered.")
 
-def run_phish():
-    draw_logo()
-    platform = input("\033[92m[?] TARGET PLATFORM (e.g. Roblox): \033[0m")
-    target = input("\033[92m[?] TARGET EMAIL/USER: \033[0m")
+def run_capture(type_id):
+    header()
+    mode = "LINK" if type_id == "1" else "EMAIL"
+    plat = input(f"\033[92m[?] SELECT PLATFORM (e.g. Roblox/Discord): \033[0m")
     
-    print("\n[*] Initializing Tunnel...")
-    time.sleep(1)
+    print(f"\n[*] Generating {plat} {mode}...")
+    time.sleep(1.5)
     
-    # This is the 'Leak' logic—it generates and SAVES data
-    fake_pass = ''.join(random.choices(string.ascii_letters + string.digits, k=10))
-    link = f"https://{platform.lower()}-security-access.nuker.io/auth"
+    # Simulating the captured data
+    u = f"User_{random.randint(10,99)}"
+    p = "".join(random.choices(string.ascii_letters + string.digits, k=10))
     
-    with open(LOG_FILE, "a") as f:
-        f.write(f"[{time.ctime()}] {platform} | User: {target} | PWD: {fake_pass}\n")
+    # Save to the one folder
+    with open(DB, "a") as f:
+        f.write(f"[{time.ctime()}] {plat} | USER: {u} | PASS: {p}\n")
     
-    print(f"[*] PUBLIC LINK: \033[93m{link}\033[0m")
-    input("\n[!] DATA CAPTURED. Press Enter to return to main menu...")
-    main_menu(f"Leaked {platform} credentials for {target}")
+    # Return to menu with the "Live Message" showing User/Pass
+    main(f"NEW HIT! PLAT: {plat} | USER: {u} | PASS: {p}")
 
 def run_malware():
-    draw_logo()
-    print("[*] BUILDING MALWARE PAYLOAD...")
+    header()
+    print("\033[92m[*] BUILDING REMOTE ACCESS PAYLOAD...")
     for i in range(1, 11):
-        time.sleep(0.2)
-        sys.stdout.write(f"\r    Encryption: [{'#'*i}{'.'*(10-i)}] {i*10}%")
+        time.sleep(0.3)
+        sys.stdout.write(f"\r    Status: [{'#'*i}{'.'*(10-i)}] {i*10}%")
         sys.stdout.flush()
-    print(f"\n\n\033[92m[!] Success: payload_v{VERSION}.exe generated.\033[0m")
-    input("\nPress Enter...")
-    main_menu("Malware Compilation Successful")
+    
+    print(f"\n\n\033[92m[!] SUCCESS: Malware 'nuker_payload.exe' saved to {FOLDER}/")
+    input("\nPress Enter to return...")
+    main("MALWARE COMPILED - READY TO SEND")
 
-def view_data():
-    draw_logo()
-    print(f"\033[92m--- DATABASE: ./{LOG_FILE} ---\033[0m\n")
-    if os.path.exists(LOG_FILE) and os.path.getsize(LOG_FILE) > 0:
-        with open(LOG_FILE, "r") as f:
+def view_db():
+    header()
+    print("\033[92m--- FULL CAPTURE LOGS ---\033[0m\n")
+    if os.path.exists(DB):
+        with open(DB, "r") as f:
             print(f.read())
     else:
-        print("Database is currently empty.")
+        print("No data in folder yet.")
     input("\nPress Enter...")
-    main_menu()
-
-def confirm_delete():
-    draw_logo()
-    confirm = input("\033[91m[!] ARE YOU SURE? THIS DELETES ALL LEAKS (y/n): \033[0m")
-    if confirm.lower() == 'y':
-        if os.path.exists(LOG_FILE):
-            os.remove(LOG_FILE)
-        main_menu("All data wiped successfully.")
-    else:
-        main_menu("Wipe cancelled.")
+    main()
 
 if __name__ == "__main__":
-    main_menu()
+    main()
