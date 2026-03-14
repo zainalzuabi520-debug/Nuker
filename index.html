@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NUKER // C2 PANEL</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1 class="big-title">NUKER</h1>
+        <div class="subtitle">ADVANCED MULTI-TOOL // STATUS: LISTENING</div>
+    </header>
+
+    <div class="tabs">
+        <button class="tab active" onclick="show('links')">DEPLOY LINKS</button>
+        <button class="tab" onclick="show('emails')">EMAIL LURES</button>
+        <button class="tab" onclick="show('malware')">PAYLOAD GEN</button>
+    </div>
+
+    <main id="links" class="view active">
+        <label>SELECT MODULE</label>
+        <select id="p-select">
+            <option>Discord Nitro</option>
+            <option>Instagram Verify</option>
+            <option>Roblox Generator</option>
+        </select>
+        <button class="btn" onclick="runAction('links', 'Tunnel active: http://localhost:8080/auth')">GENERATE LINK</button>
+        <div class="console" id="log-links">> Awaiting command...</div>
+    </main>
+
+    <main id="emails" class="view">
+        <label>TARGET IDENTIFIER</label>
+        <input type="text" id="target-mail" placeholder="victim@example.com">
+        <button class="btn" onclick="captureData()">COMPILE & LOG INFO</button>
+        <div class="console" id="log-emails">> Ready for target...</div>
+    </main>
+
+    <main id="malware" class="view">
+        <label>OUTPUT FILENAME</label>
+        <input type="text" id="fname" value="Security_Update.exe">
+        <button class="btn" onclick="runAction('malware', 'Payload obfuscated and built.')">BUILD PAYLOAD</button>
+        <div class="console" id="log-malware">> Compiler idle...</div>
+    </main>
+
+    <footer>made by Zain</footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
