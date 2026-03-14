@@ -1,120 +1,91 @@
 import os
 import time
 import sys
+import random
+import string
 
-# --- PERMANENT CONFIG ---
-VERSION = "4.2.5-PRIVATE"
+# --- CONFIGURATION ---
 AUTHOR = "Zain"
-LOG_FILE = "passwords.txt"
+VERSION = "6.1.0-CLEAN"
+FOLDER_NAME = "Nuker_Data"
+LOG_FILE = f"{FOLDER_NAME}/passwords.txt"
 
-# This is the Whitelist you asked for - saved forever in the code
-WHITELIST = [
-    "Admin", 
-    "DeveloperThecrew", 
-    "Player_3", 
-    "Player_4"
-]
+# --- INITIALIZE FOLDER ---
+if not os.path.exists(FOLDER_NAME):
+    os.makedirs(FOLDER_NAME)
 
 def clear():
-    os.system('clear')
+    os.system('clear' if os.name == 'posix' else 'cls')
 
 def header():
     clear()
-    print("\033[92m") # Neon Green
-    print("="*60)
-    print("  _   _ _   _ _  _______ _____  ")
-    print(" | \ | | | | | |/ / ____|  __ \ ")
-    print(" |  \| | | | | ' /|  __| | |__) |")
-    print(" | |\  | |_| |  < | |____|  _  / ")
-    print(" |_| \_|\___/|_|\_\______|_| \_\ ")
-    print("="*60)
-    print(f" [SYSTEM]: NUKER C2 INTERFACE | v{VERSION}")
+    print("\033[92m" + "="*70)
+    print("  _   _ _   _ _  _______ _____     __  __ ______  _____          ")
+    print(" | \ | | | | | |/ / ____|  __ \   |  \/  |  ____|/ ____|   /\    ")
+    print(" |  \| | | | | ' /|  __| | |__) |  | \  / | |__  | |  __   /  \   ")
+    print(" | |\  | |_| |  < | |____|  _  /   | |\/| |  __| | | |_ | / /\ \  ")
+    print(" |_| \_|\___/|_|\_\______|_| \_\   |_|  |_||____| \____|/_/  \_\ ")
+    print("="*70)
+    print(f" [SYSTEM]: NUKER FINAL C2 | v{VERSION}")
     print(f" [CREDIT]: made by {AUTHOR}")
-    print("="*60)
+    print("="*70 + "\033[0m")
 
-def main_menu():
+def footer(msg="WAITING FOR COMMAND..."):
+    print("\033[92m" + "="*70)
+    print(f" [LAST CAPTURE]: \033[93m{msg}\033[0m")
+    print("\033[92m" + "="*70 + "\033[0m")
+
+def main_menu(status="Ready"):
     header()
-    print(f"\033[93m[!] ACTIVE SESSION: {WHITELIST[0]} (Whitelisted)\033[92m")
-    print("-" * 60)
-    print("[1] DEPLOY PHISH LURE (Email/Link)")
-    print("[2] COMPILE MALWARE PAYLOAD")
-    print("[3] VIEW CAPTURED DATA (passwords.txt)")
-    print("[4] MANAGE WHITELIST (4 Players)")
-    print("[5] EXIT")
-    print("-" * 60)
+    print("\033[92m [1] SOCIAL MODULE (50+ Templates)")
+    print(" [2] GAMING MODULE (30+ Templates)")
+    print(" [3] EMAIL MODULE  (25+ Templates)")
+    print(" [4] VIEW SAVED DATA (passwords.txt)")
+    print(" [5] EXIT")
+    print("-" * 70)
+    footer(status)
     
-    choice = input("\nNUKER > ")
+    cmd = input("\033[92mNUKER_C2 > \033[0m").strip()
     
-    if choice == "1":
-        deploy_lure()
-    elif choice == "2":
-        build_malware()
-    elif choice == "3":
-        view_logs()
-    elif choice == "4":
-        show_whitelist()
-    elif choice == "5":
+    if cmd in ["1", "2", "3"]:
+        run_module(cmd)
+    elif cmd == "4":
+        view_data()
+    elif cmd == "5":
         sys.exit()
     else:
-        main_menu()
+        main_menu("Invalid Command")
 
-def deploy_lure():
+def run_module(choice):
     header()
-    print("[*] SELECTING TEMPLATE...")
-    time.sleep(0.5)
-    print("    [A] Discord Nitro | [B] Instagram | [C] Roblox")
-    opt = input("\nTYPE > ").upper()
-    target = input("[?] Enter Target Email/ID: ")
+    platform = input("\033[92m[?] ENTER PLATFORM NAME: \033[0m")
+    target = input("\033[92m[?] TARGET USERNAME/EMAIL: \033[0m")
     
-    print("\n[*] GENERATING ENCRYPTED LINK...")
-    # This is the link logic you were looking for
-    link = f"http://nuker-server.io/auth?id={int(time.time())}"
-    print(f"[*] LINK CREATED: {link}")
-    time.sleep(1)
+    print(f"\n[*] Deploying {platform} Tunnel...")
+    time.sleep(1.5)
+    
+    link = f"https://{platform.lower()}-secure-access.nuker.io/login"
+    print(f"[*] PUBLIC LINK: \033[93m{link}\033[0m")
+    
+    # Generate random fake password for the display
+    fake_pass = ''.join(random.choices(string.ascii_letters + string.digits, k=10))
+    status_update = f"CAP: [{target}] | PLAT: [{platform}] | PWD: [{fake_pass}]"
     
     with open(LOG_FILE, "a") as f:
-        f.write(f"[{time.ctime()}] TARGET: {target} | LINK: {link}\n")
+        f.write(f"TIME: {time.ctime()} | PLAT: {platform} | USER: {target} | PWD: {fake_pass}\n")
     
-    print(f"\n\033[97m[!] DATA SENT TO {LOG_FILE}\033[92m")
-    input("\nPress Enter...")
-    main_menu()
+    input("\n[!] DATA LOGGED. Press Enter to return...")
+    main_menu(status_update)
 
-def build_malware():
+def view_data():
     header()
-    fname = input("[?] Malware Filename (e.g. nuker.exe): ")
-    print(f"\n[*] INJECTING PAYLOAD INTO {fname}...")
-    for i in range(1, 11):
-        time.sleep(0.2)
-        sys.stdout.write(f"\r    PROGRESS: [{'#' * i}{'.' * (10-i)}] {i*10}%")
-        sys.stdout.flush()
-    
-    with open(LOG_FILE, "a") as f:
-        f.write(f"[{time.ctime()}] BUILD: {fname} SUCCESSFUL\n")
-        
-    print(f"\n\n\033[97m[!] {fname} COMPILED IN /builds/\033[92m")
-    input("\nPress Enter...")
-    main_menu()
-
-def view_logs():
-    header()
-    print(f"--- DATABASE ({LOG_FILE}) ---")
+    print(f"\033[92m--- DATABASE ENTRIES ---\033[0m\n")
     if os.path.exists(LOG_FILE):
         with open(LOG_FILE, "r") as f:
             print(f.read())
     else:
-        print("Empty.")
+        print("No data found.")
     input("\nPress Enter...")
-    main_menu()
-
-def show_whitelist():
-    header()
-    print("--- NUKER AUTHORIZED USERS ---")
-    for i, user in enumerate(WHITELIST, 1):
-        status = "ONLINE" if i <= 2 else "OFFLINE"
-        print(f"[{i}] {user.ljust(20)} | STATUS: {status}")
-    print("-" * 60)
-    print("[!] 4/4 Player Slots Allocated.")
-    input("\nPress Enter to return...")
     main_menu()
 
 if __name__ == "__main__":
