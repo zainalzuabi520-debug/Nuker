@@ -2,13 +2,11 @@ import os
 import time
 import sys
 
-# --- CONFIG ---
 AUTHOR = "Zain"
-VERSION = "8.5.0-MANUAL"
+VERSION = "9.0.0-ULTRA-HD"
 FOLDER = "Nuker_Data"
-LOG_FILE = f"{FOLDER}/passwords.txt"
+LOG_FILE = f"{FOLDER}/captured_hits.txt"
 
-# Create the master folder if it doesn't exist
 if not os.path.exists(FOLDER):
     os.makedirs(FOLDER)
 
@@ -22,85 +20,103 @@ def header():
  | |\  | |_| |  < | |____|  _  / 
  |_| \_|\___/|_|\_\______|_| \_\ 
     """)
-    print(f" [C2 PANEL]: v{VERSION} | [DEV]: {AUTHOR}")
+    print(f" [INTERFACE]: v{VERSION} | [DEV]: {AUTHOR}")
     print("="*70 + "\033[0m")
 
 def footer(msg):
     print("\033[92m" + "="*70)
-    print(f" [LIVE LOG]: \033[93m{msg}\033[0m")
+    print(f" [LAST HIT]: \033[93m{msg}\033[0m")
     print("\033[92m" + "="*70 + "\033[0m")
 
-def main_menu(status="SYSTEM READY"):
+def main_menu(status="READY FOR DEPLOYMENT"):
     header()
-    print("\033[92m [1] MANUALLY CAPTURE HIT (Enter User/Pass)")
-    print(" [2] GENERATE EMAIL HTML (Creates .html file)")
-    print(" [3] BUILD PAYLOAD (.EXE Simulation)")
-    print(" [4] BROWSE FOLDER (View all created files)")
-    print(" [5] EXIT")
+    print("\033[92m [1] GENERATE PRO LOGIN PAGE (Discord/Insta/etc.)")
+    print(" [2] BUILD PAYLOAD (Cross-Platform Sim)")
+    print(" [3] VIEW CAPTURED DATA (Hit Log)")
+    print(" [4] EXIT")
     print("-" * 70)
     footer(status)
     
-    choice = input("\n\033[92mNUKER > \033[0m").strip()
+    cmd = input("\n\033[92mNUKER_C2 > \033[0m").strip()
     
-    if choice == "1":
-        manual_hit()
-    elif choice == "2":
-        make_email()
-    elif choice == "3":
-        make_payload()
-    elif choice == "4":
-        list_files()
-    elif choice == "5":
+    if cmd == "1":
+        generate_pro_page()
+    elif cmd == "2":
+        build_payload()
+    elif cmd == "3":
+        view_hits()
+    elif cmd == "4":
         sys.exit()
 
-def manual_hit():
+def generate_pro_page():
     header()
-    plat = input("[?] Platform Name: ")
-    user = input("[?] Target Username: ")
-    pw = input("[?] Target Password: ")
+    target = input("[?] Target Platform (e.g., Discord): ").capitalize()
     
-    # Writing to the log file so it is saved
+    # Modern CSS for a dark-mode professional look
+    html_content = f"""
+    <html>
+    <head>
+        <style>
+            body {{ background: #2f3136; color: white; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; }}
+            .login-box {{ background: #36393f; padding: 40px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.2); width: 350px; text-align: center; }}
+            h2 {{ margin-bottom: 20px; }}
+            input {{ width: 100%; padding: 10px; margin: 10px 0; border-radius: 3px; border: none; background: #202225; color: white; }}
+            button {{ width: 100%; padding: 10px; background: #5865f2; border: none; color: white; font-weight: bold; cursor: pointer; border-radius: 3px; }}
+        </style>
+    </head>
+    <body>
+        <div class='login-box'>
+            <h2>{target} Login</h2>
+            <input type='text' placeholder='Email or Phone'>
+            <input type='password' placeholder='Password'>
+            <button>Login</button>
+        </div>
+    </body>
+    </html>
+    """
+    
+    file_path = f"{FOLDER}/{target.lower()}_login.html"
+    with open(file_path, "w") as f:
+        f.write(html_content)
+    
+    print(f"\n\033[92m[!] SUCCESS: {target} page generated at {file_path}")
+    
+    # Simulating the hit immediately for your video
+    user = input("[?] (Simulate Hit) Enter Username to show: ")
+    pw = input("[?] (Simulate Hit) Enter Password to show: ")
+    
     with open(LOG_FILE, "a") as f:
-        f.write(f"[{time.ctime()}] {plat} | USER: {user} | PASS: {pw}\n")
+        f.write(f"[{time.ctime()}] {target} | USER: {user} | PASS: {pw}\n")
     
-    main_menu(f"SUCCESS: Captured {user} on {plat}")
+    input("\nPress Enter to update the Command Bar...")
+    main_menu(f"CAPTURED: {user} | PASS: {pw}")
 
-def make_email():
+def build_payload():
     header()
-    name = input("[?] Name for HTML file (e.g., login): ")
-    path = f"{FOLDER}/{name}.html"
+    print("[1] Windows (.EXE)")
+    print("[2] Android (.APK)")
+    print("[3] iPhone (.IPA - Simulation)")
+    plat_choice = input("\n[?] Select Platform: ")
     
-    # Writing actual HTML content to the file
-    content = f"<html><body><h2>{name.upper()} LOGIN</h2><input type='text' placeholder='Username'><br><input type='password' placeholder='Password'><br><button>Login</button></body></html>"
-    with open(path, "w") as f:
-        f.write(content)
+    ext = ".exe" if plat_choice == "1" else ".apk" if plat_choice == "2" else ".ipa"
+    name = f"payload_v9{ext}"
     
-    print(f"\n\033[92m[!] File created: {path}\033[0m")
-    time.sleep(2)
-    main_menu(f"Created {name}.html in Nuker_Data")
-
-def make_payload():
-    header()
-    name = input("[?] Payload Name (e.g., exploit.exe): ")
-    path = f"{FOLDER}/{name}"
-    
-    print("[*] Compiling...")
+    print(f"[*] Compiling {name}...")
     time.sleep(2)
     
-    # Writing a simulated binary string to the file
-    with open(path, "w") as f:
-        f.write("BINARY_DATA_OBFUSCATED_v8.5")
-    
-    print(f"\n\033[92m[!] File created: {path}\033[0m")
-    time.sleep(2)
-    main_menu(f"Saved {name} to Nuker_Data")
+    with open(f"{FOLDER}/{name}", "w") as f:
+        f.write("STUB_DATA_v9_ENCRYPTED")
+        
+    main_menu(f"Payload '{name}' generated in folder.")
 
-def list_files():
+def view_hits():
     header()
-    print(f"\033[92m--- DIRECTORY: ./{FOLDER} ---\033[0m")
-    for item in os.listdir(FOLDER):
-        print(f" [+] {item}")
-    input("\nPress Enter to return...")
+    if os.path.exists(LOG_FILE):
+        with open(LOG_FILE, "r") as f:
+            print(f.read())
+    else:
+        print("No hits captured yet.")
+    input("\nPress Enter...")
     main_menu()
 
 if __name__ == "__main__":
