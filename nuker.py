@@ -1,16 +1,14 @@
 import os
 import time
 import sys
-import random
-import string
 
-# --- SETTINGS ---
+# --- CONFIG ---
 AUTHOR = "Zain"
-VERSION = "7.5.0-ULTRA"
+VERSION = "8.5.0-MANUAL"
 FOLDER = "Nuker_Data"
-DB = f"{FOLDER}/passwords.txt"
+LOG_FILE = f"{FOLDER}/passwords.txt"
 
-# Ensure folder is ready
+# Create the master folder if it doesn't exist
 if not os.path.exists(FOLDER):
     os.makedirs(FOLDER)
 
@@ -27,74 +25,83 @@ def header():
     print(f" [C2 PANEL]: v{VERSION} | [DEV]: {AUTHOR}")
     print("="*70 + "\033[0m")
 
-def cmd_bar(msg):
-    """This is the bottom bar that shows the captured User/Pass"""
+def footer(msg):
     print("\033[92m" + "="*70)
-    print(f" [LIVE FEED]: \033[93m{msg}\033[0m")
+    print(f" [LIVE LOG]: \033[93m{msg}\033[0m")
     print("\033[92m" + "="*70 + "\033[0m")
 
-def main(status="SYSTEM IDLE - WAITING FOR TARGET"):
+def main_menu(status="SYSTEM READY"):
     header()
-    print("\033[92m [1] DEPLOY PHISH-LINK (100+ Platforms)")
-    print(" [2] DEPLOY EMAIL-LURE (Direct Template)")
-    print(" [3] COMPILE MALWARE (Full Device Control Sim)")
-    print(" [4] VIEW DATABASE (All Leaked Creds)")
+    print("\033[92m [1] MANUALLY CAPTURE HIT (Enter User/Pass)")
+    print(" [2] GENERATE EMAIL HTML (Creates .html file)")
+    print(" [3] BUILD PAYLOAD (.EXE Simulation)")
+    print(" [4] BROWSE FOLDER (View all created files)")
     print(" [5] EXIT")
     print("-" * 70)
-    cmd_bar(status)
+    footer(status)
     
-    choice = input("\033[92mNUKER > \033[0m").strip()
+    choice = input("\n\033[92mNUKER > \033[0m").strip()
     
-    if choice == "1" or choice == "2":
-        run_capture(choice)
+    if choice == "1":
+        manual_hit()
+    elif choice == "2":
+        make_email()
     elif choice == "3":
-        run_malware()
+        make_payload()
     elif choice == "4":
-        view_db()
+        list_files()
     elif choice == "5":
         sys.exit()
 
-def run_capture(type_id):
+def manual_hit():
     header()
-    mode = "LINK" if type_id == "1" else "EMAIL"
-    plat = input(f"\033[92m[?] SELECT PLATFORM (e.g. Roblox/Discord): \033[0m")
+    plat = input("[?] Platform Name: ")
+    user = input("[?] Target Username: ")
+    pw = input("[?] Target Password: ")
     
-    print(f"\n[*] Generating {plat} {mode}...")
-    time.sleep(1.5)
+    # Writing to the log file so it is saved
+    with open(LOG_FILE, "a") as f:
+        f.write(f"[{time.ctime()}] {plat} | USER: {user} | PASS: {pw}\n")
     
-    # Simulating the captured data
-    u = f"User_{random.randint(10,99)}"
-    p = "".join(random.choices(string.ascii_letters + string.digits, k=10))
-    
-    # Save to the one folder
-    with open(DB, "a") as f:
-        f.write(f"[{time.ctime()}] {plat} | USER: {u} | PASS: {p}\n")
-    
-    # Return to menu with the "Live Message" showing User/Pass
-    main(f"NEW HIT! PLAT: {plat} | USER: {u} | PASS: {p}")
+    main_menu(f"SUCCESS: Captured {user} on {plat}")
 
-def run_malware():
+def make_email():
     header()
-    print("\033[92m[*] BUILDING REMOTE ACCESS PAYLOAD...")
-    for i in range(1, 11):
-        time.sleep(0.3)
-        sys.stdout.write(f"\r    Status: [{'#'*i}{'.'*(10-i)}] {i*10}%")
-        sys.stdout.flush()
+    name = input("[?] Name for HTML file (e.g., login): ")
+    path = f"{FOLDER}/{name}.html"
     
-    print(f"\n\n\033[92m[!] SUCCESS: Malware 'nuker_payload.exe' saved to {FOLDER}/")
+    # Writing actual HTML content to the file
+    content = f"<html><body><h2>{name.upper()} LOGIN</h2><input type='text' placeholder='Username'><br><input type='password' placeholder='Password'><br><button>Login</button></body></html>"
+    with open(path, "w") as f:
+        f.write(content)
+    
+    print(f"\n\033[92m[!] File created: {path}\033[0m")
+    time.sleep(2)
+    main_menu(f"Created {name}.html in Nuker_Data")
+
+def make_payload():
+    header()
+    name = input("[?] Payload Name (e.g., exploit.exe): ")
+    path = f"{FOLDER}/{name}"
+    
+    print("[*] Compiling...")
+    time.sleep(2)
+    
+    # Writing a simulated binary string to the file
+    with open(path, "w") as f:
+        f.write("BINARY_DATA_OBFUSCATED_v8.5")
+    
+    print(f"\n\033[92m[!] File created: {path}\033[0m")
+    time.sleep(2)
+    main_menu(f"Saved {name} to Nuker_Data")
+
+def list_files():
+    header()
+    print(f"\033[92m--- DIRECTORY: ./{FOLDER} ---\033[0m")
+    for item in os.listdir(FOLDER):
+        print(f" [+] {item}")
     input("\nPress Enter to return...")
-    main("MALWARE COMPILED - READY TO SEND")
-
-def view_db():
-    header()
-    print("\033[92m--- FULL CAPTURE LOGS ---\033[0m\n")
-    if os.path.exists(DB):
-        with open(DB, "r") as f:
-            print(f.read())
-    else:
-        print("No data in folder yet.")
-    input("\nPress Enter...")
-    main()
+    main_menu()
 
 if __name__ == "__main__":
-    main()
+    main_menu()
