@@ -2,17 +2,18 @@ import os
 import time
 import sys
 
+# --- SETTINGS ---
 AUTHOR = "Zain"
-VERSION = "9.0.0-ULTRA-HD"
+VERSION = "10.0.0-LISTENER"
 FOLDER = "Nuker_Data"
-LOG_FILE = f"{FOLDER}/captured_hits.txt"
+LOG_FILE = f"{FOLDER}/hits.txt"
 
 if not os.path.exists(FOLDER):
     os.makedirs(FOLDER)
 
 def header():
     os.system('clear')
-    print("\033[92m" + "="*70)
+    print("\033[92m" + "="*75)
     print(r"""
   _   _ _   _ _  _______ _____  
  | \ | | | | | |/ / ____|  __ \ 
@@ -20,94 +21,84 @@ def header():
  | |\  | |_| |  < | |____|  _  / 
  |_| \_|\___/|_|\_\______|_| \_\ 
     """)
-    print(f" [INTERFACE]: v{VERSION} | [DEV]: {AUTHOR}")
-    print("="*70 + "\033[0m")
+    print(f" [SYSTEM]: NUKER MULTI-TOOL | v{VERSION} | STATUS: ONLINE")
+    print("="*75 + "\033[0m")
 
 def footer(msg):
-    print("\033[92m" + "="*70)
-    print(f" [LAST HIT]: \033[93m{msg}\033[0m")
-    print("\033[92m" + "="*70 + "\033[0m")
+    print("\033[92m" + "="*75)
+    print(f" [LISTENER FEED]: \033[93m{msg}\033[0m")
+    print("\033[92m" + "="*75 + "\033[0m")
 
-def main_menu(status="READY FOR DEPLOYMENT"):
+def main_menu(status="WAITING FOR INCOMING PACKETS..."):
     header()
-    print("\033[92m [1] GENERATE PRO LOGIN PAGE (Discord/Insta/etc.)")
-    print(" [2] BUILD PAYLOAD (Cross-Platform Sim)")
-    print(" [3] VIEW CAPTURED DATA (Hit Log)")
-    print(" [4] EXIT")
-    print("-" * 70)
+    print("\033[92m [1] BUILD PRO PAGE (Discord/Insta/etc.)")
+    print(" [2] START LIVE LISTENER (Capture Hits)")
+    print(" [3] COMPILE CROSS-PLATFORM PAYLOAD")
+    print(" [4] BROWSE LOCAL DATABASE")
+    print(" [5] EXIT")
+    print("-" * 75)
     footer(status)
     
-    cmd = input("\n\033[92mNUKER_C2 > \033[0m").strip()
+    choice = input("\n\033[92mNUKER_C2 > \033[0m").strip()
     
-    if cmd == "1":
-        generate_pro_page()
-    elif cmd == "2":
-        build_payload()
-    elif cmd == "3":
+    if choice == "1":
+        build_page()
+    elif choice == "2":
+        start_listener()
+    elif choice == "3":
+        build_malware()
+    elif choice == "4":
         view_hits()
-    elif cmd == "4":
+    elif choice == "5":
         sys.exit()
 
-def generate_pro_page():
+def build_page():
     header()
-    target = input("[?] Target Platform (e.g., Discord): ").capitalize()
+    target = input("[?] Target Platform Name: ").capitalize()
     
-    # Modern CSS for a dark-mode professional look
-    html_content = f"""
-    <html>
-    <head>
-        <style>
-            body {{ background: #2f3136; color: white; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; }}
-            .login-box {{ background: #36393f; padding: 40px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.2); width: 350px; text-align: center; }}
-            h2 {{ margin-bottom: 20px; }}
-            input {{ width: 100%; padding: 10px; margin: 10px 0; border-radius: 3px; border: none; background: #202225; color: white; }}
-            button {{ width: 100%; padding: 10px; background: #5865f2; border: none; color: white; font-weight: bold; cursor: pointer; border-radius: 3px; }}
-        </style>
-    </head>
-    <body>
-        <div class='login-box'>
-            <h2>{target} Login</h2>
-            <input type='text' placeholder='Email or Phone'>
-            <input type='password' placeholder='Password'>
-            <button>Login</button>
-        </div>
-    </body>
-    </html>
+    # High-End Professional CSS
+    css = """
+    body { background-color: #36393f; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+    .card { background: #2f3136; padding: 32px; border-radius: 8px; width: 400px; box-shadow: 0 8px 16px rgba(0,0,0,0.2); }
+    h3 { color: white; text-align: center; margin-bottom: 8px; }
+    p { color: #b9bbbe; text-align: center; margin-bottom: 20px; font-size: 14px; }
+    input { width: 100%; padding: 10px; margin-bottom: 16px; border-radius: 3px; border: 1px solid #202225; background: #202225; color: white; box-sizing: border-box; }
+    button { width: 100%; padding: 10px; background: #5865f2; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 16px; transition: 0.2s; }
+    button:hover { background: #4752c4; }
     """
+    html = f"<html><head><style>{css}</style></head><body><div class='card'><h3>{target}</h3><p>Welcome back!</p><input type='text' placeholder='Email'><input type='password' placeholder='Password'><button>Login</button></div></body></html>"
     
-    file_path = f"{FOLDER}/{target.lower()}_login.html"
-    with open(file_path, "w") as f:
-        f.write(html_content)
+    path = f"{FOLDER}/{target.lower()}_template.html"
+    with open(path, "w") as f:
+        f.write(html)
     
-    print(f"\n\033[92m[!] SUCCESS: {target} page generated at {file_path}")
-    
-    # Simulating the hit immediately for your video
-    user = input("[?] (Simulate Hit) Enter Username to show: ")
-    pw = input("[?] (Simulate Hit) Enter Password to show: ")
-    
-    with open(LOG_FILE, "a") as f:
-        f.write(f"[{time.ctime()}] {target} | USER: {user} | PASS: {pw}\n")
-    
-    input("\nPress Enter to update the Command Bar...")
-    main_menu(f"CAPTURED: {user} | PASS: {pw}")
+    main_menu(f"Template Created: {path}")
 
-def build_payload():
+def start_listener():
     header()
-    print("[1] Windows (.EXE)")
-    print("[2] Android (.APK)")
-    print("[3] iPhone (.IPA - Simulation)")
-    plat_choice = input("\n[?] Select Platform: ")
+    print("\033[94m[*] Socket established on Port 8080...")
+    print("[*] Listening for incoming data packets from tunnel...")
     
-    ext = ".exe" if plat_choice == "1" else ".apk" if plat_choice == "2" else ".ipa"
-    name = f"payload_v9{ext}"
+    # Simulation of the "Hit" appearing in the app
+    for i in range(5, 0, -1):
+        sys.stdout.write(f"\r[!] Intercepting in {i}s...")
+        sys.stdout.flush()
+        time.sleep(1)
     
-    print(f"[*] Compiling {name}...")
+    u, p = "User_Demo", "Pass_1234"
+    with open(LOG_FILE, "a") as f:
+        f.write(f"[{time.ctime()}] INCOMING HIT | USER: {u} | PASS: {p}\n")
+    
+    main_menu(f"!!! ALERT: NEW HIT !!! USER: {u} | PASS: {p}")
+
+def build_malware():
+    header()
+    name = input("[?] Payload Filename: ")
+    print(f"[*] Obfuscating code for {name}...")
     time.sleep(2)
-    
     with open(f"{FOLDER}/{name}", "w") as f:
-        f.write("STUB_DATA_v9_ENCRYPTED")
-        
-    main_menu(f"Payload '{name}' generated in folder.")
+        f.write("STUB_ENCRYPTED_DATA_v10")
+    main_menu(f"Payload '{name}' is now in {FOLDER}")
 
 def view_hits():
     header()
@@ -115,7 +106,7 @@ def view_hits():
         with open(LOG_FILE, "r") as f:
             print(f.read())
     else:
-        print("No hits captured yet.")
+        print("Log is empty.")
     input("\nPress Enter...")
     main_menu()
 
